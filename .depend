@@ -1,0 +1,29 @@
+trigo.cmi :
+options.cmi :
+point.cmi :
+segment.cmi : point.cmi
+bsp.cmi : segment.cmi point.cmi
+physic.cmi : point.cmi bsp.cmi
+player.cmi : point.cmi bsp.cmi
+parse_lab.cmi :
+render.cmi : player.cmi bsp.cmi
+trigo.cmo : trigo.cmi
+trigo.cmx : trigo.cmi
+options.cmo : options.cmi
+options.cmx : options.cmi
+point.cmo : point.cmi
+point.cmx : point.cmi
+segment.cmo : point.cmi segment.cmi
+segment.cmx : point.cmx segment.cmi
+bsp.cmo : segment.cmi bsp.cmi
+bsp.cmx : segment.cmx bsp.cmi
+physic.cmo : physic.cmi
+physic.cmx : physic.cmi
+player.cmo : point.cmi physic.cmi options.cmi player.cmi
+player.cmx : point.cmx physic.cmx options.cmx player.cmi
+parse_lab.cmo : parse_lab.cmi
+parse_lab.cmx : parse_lab.cmi
+render.cmo : render.cmi
+render.cmx : render.cmi
+main.cmo : segment.cmi point.cmi player.cmi options.cmi bsp.cmi
+main.cmx : segment.cmx point.cmx player.cmx options.cmx bsp.cmx
