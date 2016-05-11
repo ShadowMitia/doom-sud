@@ -14,7 +14,7 @@ LIBS = str.cma graphics.cma
 # bigarray.cma sdl.cma
 LIBOPTS = $(LIBS:.cma=.cmxa)
 
-EXEC = bsp
+EXEC = doom
 
 OBJS = 	trigo.cmo options.cmo point.cmo \
 	segment.cmo bsp.cmo physic.cmo \

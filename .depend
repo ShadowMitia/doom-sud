@@ -23,7 +23,9 @@ player.cmo : point.cmi physic.cmi options.cmi player.cmi
 player.cmx : point.cmx physic.cmx options.cmx player.cmi
 parse_lab.cmo : parse_lab.cmi
 parse_lab.cmx : parse_lab.cmi
-render.cmo : render.cmi
-render.cmx : render.cmi
-main.cmo : segment.cmi point.cmi player.cmi options.cmi bsp.cmi
-main.cmx : segment.cmx point.cmx player.cmx options.cmx bsp.cmx
+render.cmo : segment.cmi point.cmi player.cmi options.cmi bsp.cmi render.cmi
+render.cmx : segment.cmx point.cmx player.cmx options.cmx bsp.cmx render.cmi
+main.cmo : segment.cmi render.cmi point.cmi player.cmi parse_lab.cmi \
+    options.cmi bsp.cmi
+main.cmx : segment.cmx render.cmx point.cmx player.cmx parse_lab.cmx \
+    options.cmx bsp.cmx
