@@ -21,11 +21,9 @@ let rec rev_parse f bsp p =
 let rec iter f bsp =
   match bsp with
   | E -> ()
-  | N(root, left, right) ->
-     iter f left; f root; iter f right
+  | N(root, left, right) -> iter f left; f root; iter f right
 
 let rec build_bsp sl =
   match sl with
   | [] -> E
-  | s :: e -> let l, r = Segment.split s e in
-              N(s, build_bsp l, build_bsp r)
+  | s :: e -> let l, r = Segment.split s e in N(s, build_bsp l, build_bsp r)
