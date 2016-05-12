@@ -4,6 +4,9 @@ open Bsp
 open Player
 open Graphics
 
+let clipping bsp =
+  failwith "TODO"
+
 let display_minimap bsp p =
   Graphics.set_color Graphics.white;
   Graphics.fill_rect 0 0 200 200;

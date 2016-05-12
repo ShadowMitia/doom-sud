@@ -109,7 +109,7 @@ let generate_segments l =
 let () =
   (** INITIALISATION **)
   let (player_x, player_y, player_angle), labyrinth = Parse_lab.read_lab Options.cin in
-  let player = Player.new_player (Point.new_point player_x player_y) player_angle in
+  let player = ref (Player.new_player (Point.new_point player_x player_y) player_angle) in
   let gen_segs = generate_segments labyrinth in
   let bsp = Bsp.build_bsp gen_segs in
   print_list (gen_segs);
@@ -122,22 +122,32 @@ let () =
   Graphics.open_graph (Printf.sprintf " %dx%d" Options.win_w Options.win_h);
   Graphics.set_window_title "Doom-Sud";
   Graphics.auto_synchronize false;
-  Render.display bsp player; Graphics.synchronize();
+  Render.display bsp !player; Graphics.synchronize();
   try
     while true do
-      ( (** EVENTS **)
-        let ev = Graphics.wait_next_event [Graphics.Key_pressed] in
-        match ev with
-        | keypressed -> match ev.key with
-                        | _ -> print_char ev.key; print_newline ());
-      (** UPDATE **)
-      print_string "list\n";
-      print_list (gen_segs);
-      print_string "end_list\n";
-      (** RENDER **)
-      Render.display bsp player;
-      (** DRAW **)
-      Graphics.synchronize();
+       (** EVENTS **)
+      let ev = Graphics.wait_next_event [Graphics.Key_pressed] in
+
+      begin match ev with
+      | keypressed ->
+         let player_step = (int_of_float Options.step_dist) in
+         begin match ev.key with
+         | 'w' -> Player.move Player.MFwd !player bsp
+         | 's' -> Player.move Player.MBwd !player bsp
+         | 'd' -> Player.move Player.MRight !player bsp
+         | 'a' -> Player.move Player.MLeft !player bsp
+         | _ -> print_char ev.key; print_newline ()
+         end
+      end;
+
+          (** UPDATE **)
+          print_string "list\n";
+        print_list (gen_segs);
+        print_string "end_list\n";
+        (** RENDER **)
+        Render.display bsp !player;
+        (** DRAW **)
+        Graphics.synchronize();
     done
   ;
   with Exit -> Graphics.close_graph(); exit 0
