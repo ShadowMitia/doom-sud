@@ -8,6 +8,8 @@ type t = {
 
 type tpos = L | R | C
 
+val print_segment : t -> unit
+
 val new_segment : ?id:string -> int -> int -> int -> int -> t
 
 val get_position : Point.t -> t -> tpos
