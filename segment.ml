@@ -3,8 +3,8 @@ open Point
 type t = {id : string;
           porig : Point.t;
           pdest : Point.t;
-          ci : float; (* begin *)
-          ce : float; (* end *)
+          ci : float; (* real begin of segment in % *)
+          ce : float; (* real end of end in % *)
          }
 
 type tpos = L | R | C

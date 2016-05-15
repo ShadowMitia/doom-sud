@@ -112,7 +112,8 @@ let () =
   let player = ref (Player.new_player (Point.new_point player_x player_y) player_angle) in
   let gen_segs = generate_segments labyrinth in
   let bsp = Bsp.build_bsp gen_segs in
-  print_list (gen_segs);
+  (* print_list (gen_segs); *)
+
   (* Write message to file *)
   let oc = open_out "debug.org" in    (* create or truncate file, return channel *)
   print_bsp_to_file bsp oc ;  (* write something *)
@@ -130,24 +131,26 @@ let () =
 
       begin match ev with
       | keypressed ->
-         let player_step = (int_of_float Options.step_dist) in
          begin match ev.key with
          | 'w' -> Player.move Player.MFwd !player bsp
          | 's' -> Player.move Player.MBwd !player bsp
          | 'd' -> Player.move Player.MRight !player bsp
          | 'a' -> Player.move Player.MLeft !player bsp
+         | 'q' -> Player.rotate Player.Left !player
+         | 'e' -> Player.rotate Player.Right !player
+         (* | 'm' -> Options.mode <- if Options.mode = Options.ThreeD then Options.TwoD ele Options.ThreeD *)
          | _ -> print_char ev.key; print_newline ()
          end
       end;
 
-          (** UPDATE **)
-          print_string "list\n";
-        print_list (gen_segs);
-        print_string "end_list\n";
-        (** RENDER **)
-        Render.display bsp !player;
-        (** DRAW **)
-        Graphics.synchronize();
+      (** UPDATE **)
+      (*print_string "list\n";
+      print_list (gen_segs);
+      print_string "end_list\n";*)
+      (** RENDER **)
+      Render.display bsp !player;
+      (** DRAW **)
+      Graphics.synchronize();
     done
   ;
   with Exit -> Graphics.close_graph(); exit 0
