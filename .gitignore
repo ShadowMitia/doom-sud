@@ -1,4 +1,5 @@
 *.org
+!compte_rendu.org
 *.svg
 doom
 
