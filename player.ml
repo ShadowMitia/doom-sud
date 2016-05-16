@@ -13,8 +13,8 @@ type dir = Left | Right
 
 let rotate d p =
   match d with
-  | Left ->  p.pa <- p.pa + 25
-  | Right -> p.pa <- p.pa - 25
+  | Left ->  p.pa <- p.pa + 15
+  | Right -> p.pa <- p.pa - 15
 
 
 type mv = MFwd | MBwd | MLeft | MRight
