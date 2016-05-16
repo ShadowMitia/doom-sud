@@ -1,3 +1,7 @@
+open Segment
+open Point
+open Player
+
 val rtan : float -> float
 val dtan : int -> float
 val dcos : int -> float

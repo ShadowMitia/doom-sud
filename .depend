@@ -1,4 +1,4 @@
-trigo.cmi :
+trigo.cmi : segment.cmi point.cmi player.cmi
 options.cmi :
 point.cmi :
 segment.cmi : point.cmi
@@ -7,8 +7,8 @@ physic.cmi : point.cmi bsp.cmi
 player.cmi : point.cmi bsp.cmi
 parse_lab.cmi :
 render.cmi : player.cmi bsp.cmi
-trigo.cmo : trigo.cmi
-trigo.cmx : trigo.cmi
+trigo.cmo : segment.cmi point.cmi player.cmi trigo.cmi
+trigo.cmx : segment.cmx point.cmx player.cmx trigo.cmi
 options.cmo : options.cmi
 options.cmx : options.cmi
 point.cmo : point.cmi

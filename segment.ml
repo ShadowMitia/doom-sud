@@ -43,33 +43,6 @@ let get_position p s =
   | z  when z > 0.0 -> L (* gauche *)
   | _ -> assert false (* Tout les cas sont dans les autres pattern *)
 
-                (*
-let split_segment delim segm = (* segm est le segment à splitter par rapport à delim*)
-  let xA, yA ,xB, yB = get_real_coord delim in
-  let xC, yC, xD, yD = get_real_coord segm in
-  let d = (xB -. xA) *. (yD -. yC) -. (yB -. yA) *. (xD -. xC) in
-  let pos_C = get_position segm.porig delim in
-  let pos_D = get_position segm.pdest delim in
-  match d with
-  | 0.0 -> (match pos_C with (* On cherche la position d'un point du segment par rapport à delim*)
-         | L | C-> (Some segm, None)
-         | R -> (None, Some segm))
-  | _ ->(
-    let z = (xB -. xA) *. (yC -. yA) -. (yB -. yA) *. (xC -. xA) in (* produit vectoriel coord z *)
-    let c = ((-.z) /. d) in
-    match c with
-    | c when c < 1.0 && c > 0.0 ->
-      (Some {segm with id=(segm.id^"left");ce=c}, Some {segm with id=(segm.id^"right");ci=c})
-    | 0.0 (* C sur la droite AB *) -> (match pos_D with
-             | L | C -> (Some segm, None)
-             | R -> (None, Some segm))
-    | 1.0 (* D sur la droite AB *)-> (match pos_C with
-             | L | C -> (Some {segm with id=(segm.id^"left");ce=c}, Some {segm with id=(segm.id^"right");ci=c})
-             | R -> (Some {segm with id=(segm.id^"left");ci=c}, Some {segm with id=(segm.id^"right");ce=c}))
-    | _ -> (match pos_C with
-           | L | C -> (Some {segm with id=(segm.id^"left");ce=c}, Some {segm with id=(segm.id^"right");ci=c})
-           | R -> (Some {segm with id=(segm.id^"left");ci=c}, Some {segm with id=(segm.id^"right");ce=c})))
-                 *)
 let new_segment_from_L segm c =
   Some {segm with id=(get_id ());ce=c}, Some {segm with id=(get_id());ci=c}
 

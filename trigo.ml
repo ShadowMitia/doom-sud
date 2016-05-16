@@ -1,3 +1,7 @@
+open Segment
+open Point
+open Player
+
 let pi = 4. *. atan 1.
 
 let pidiv = pi /. 180.

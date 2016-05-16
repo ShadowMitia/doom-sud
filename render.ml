@@ -4,6 +4,29 @@ open Bsp
 open Player
 open Graphics
 
+let rotation_around_player seg p =
+  let xp = float_of_int p.pos.x in
+  let yp = float_of_int p.pos.y in
+  let a = -p.pa in
+  let xo = float_of_int seg.porig.x in
+  let yo = float_of_int seg.porig.y in
+  let xd = float_of_int seg.pdest.x in
+  let yd = float_of_int seg.pdest.y in
+  (* rotation around the player placed at the origin *)
+  (* translation + rotation *)
+  let xo = (xo -. xp) *. Trigo.dcos(a) -. (yo -. yp) *. Trigo.dsin(a) in
+  let yo = (xo -. xp) *. Trigo.dsin(a) +. (yo -. yp) *. Trigo.dcos(a) in
+  let xd = (xd -. xp) *. Trigo.dcos(a) -. (yd -. yp) *. Trigo.dsin(a) in
+  let yd = (xd -. xp) *. Trigo.dsin(a) +. (yd -. yp) *. Trigo.dcos(a) in
+  (* retranslate to get the segment to its proper place *)
+  let xo = int_of_float (xo +. xp) in
+  let yo = int_of_float (yo +. yp) in
+  let xd = int_of_float (xd +. xp) in
+  let yd = int_of_float (yd +. yp) in
+
+  {seg with porig=Point.new_point xo yo; pdest=Point.new_point xd yd}
+
+
 let display_minimap bsp p =
   Graphics.set_color Graphics.white;
   Graphics.fill_rect 0 0 200 200;
@@ -20,8 +43,10 @@ let display_minimap bsp p =
   Graphics.fill_circle (p.pos.x / Options.scale) (p.pos.y / Options.scale) 3
 
 let display_player player =
+  (* Draw point that represents player *)
   Graphics.set_color Graphics.yellow;
   Graphics.fill_circle player.pos.x player.pos.y 10;
+  (* Draw line to represent direction *)
   Graphics.set_color Graphics.cyan;
   let xo = player.pos.x in
   let yo = player.pos.y in
@@ -60,41 +85,29 @@ let clipping2D seg =
     Some (xo, yo, xd, yd)
 
 let horizontal_projection seg =
-  let w_2 = (float_of_int Options.win_w) /. 2. in
-  let focal_dist = (w_2 /. Trigo.dtan(Options.fov / 2)) in
+  let is = (float_of_int Options.win_w) /. 2. in
+  let focal_dist = (is /. Trigo.dtan(Options.fov / 2)) in
   let xo = focal_dist in
   let yo = float_of_int seg.porig.y in
-  let yd = float_of_int seg.pdest.y in
   let xd = focal_dist in
-  let yo = w_2 -. (yo *. focal_dist /. xo) in
-  let yd = w_2 -. (yd *. focal_dist /. yd) in
+  let yd = float_of_int seg.pdest.y in
+  let yo = is -. ((yo *. focal_dist) /. xo) in
+  let yd = is -. ((yd *. focal_dist) /. xd) in
   { seg with porig = Point.new_point (int_of_float xo) (int_of_float yo); pdest=Point.new_point (int_of_float xd) (int_of_float yd) }
 
 let draw_walls bsp p =
-  let xp = float_of_int p.pos.x in
-  let yp = float_of_int p.pos.y in
-  let a = -(p.pa) in
   Bsp.iter (fun seg ->
       (* let xo, yo, xd, yd = Segment.get_real_coord seg in *)
-      (*
-      let xo = float_of_int seg.porig.x in
-      let yo = float_of_int seg.porig.y in
-      let xd = float_of_int seg.pdest.x in
-      let yd = float_of_int seg.pdest.y in
-       *)
+      let seg = rotation_around_player seg p in
       let seg = horizontal_projection seg in
       let s = clipping2D seg in
       match s with
       | None -> ()
       | Some (xo, yo, xd, yd) ->
-         let xo = (xo -. xp) *. Trigo.dcos(a) -. (yo -. yp) *. Trigo.dsin(a) in
-         let yo = (xo -. xp) *. Trigo.dsin(a) +. (yo -. yp) *. Trigo.dcos(a) in
-         let xd = (xd -. xp) *. Trigo.dcos(a) -. (yd -. yp) *. Trigo.dsin(a) in
-         let yd = (xd -. xp) *. Trigo.dsin(a) +. (yd -. yp) *. Trigo.dcos(a) in
-         let xo = int_of_float (xo +. xp) in
-         let yo = int_of_float (yo +. yp) in
-         let xd = int_of_float (xd +. xp +. 0.5) in
-         let yd = int_of_float (yd +. yp +. 0.5) in
+         let xo = int_of_float (xo) in
+         let yo = int_of_float (yo) in
+         let xd = int_of_float (xd) in
+         let yd = int_of_float (yd) in
          (* Segment.print_segment seg; *)
          Graphics.draw_segments [| xo, yo, xd, yd|]) bsp
 
@@ -144,12 +157,35 @@ let generate_3d_wall s =
       zld := !zld -. (!cd -. is) *. du;
       zld := !zld -. ((!cd -. is) *. di)
     end;
+  let co = int_of_float !co in
+  let cd = int_of_float !cd in
+  let zuo = (int_of_float !zuo) in
+  let zlo = (int_of_float !zlo) in
+  let zud = (int_of_float !zud) in
+  let zld = (int_of_float !zld) in
   Graphics.set_color Graphics.red;
+  if s.ci > 0. && s.ce = 1. then
+    Graphics.draw_segments ([|(co, zlo, cd, zld);
+                     (co, zuo, cd, zud);
+                     (cd, zld, cd, zud)|])
+  else if s.ce < 1. && s.ci = 0. then
+    Graphics.draw_segments ([|(co, zlo, cd, zld);
+                     (co, zuo, cd, zud);
+                     (co, zlo, co, zuo)|])
+  else if s.ci > 0. && s.ce < 1. then
+    Graphics.draw_segments ([|(co, zlo, cd, zld);
+                     (co, zuo, cd, zud)|])
+  else
+    Graphics.draw_poly ([|(co, zlo);
+                 (co, zuo);
+                 (cd, zud);
+                 (cd, zld)|])
+              (*
   Graphics.fill_poly [| (int_of_float !co, int_of_float !zlo);
                         (int_of_float !co, int_of_float !zuo);
                         (int_of_float !cd, int_of_float !zud);
-                        (int_of_float !cd, int_of_float !zld)
-                     |]
+                        (int_of_float !cd, int_of_float !z
+               *)
 
 let display_walls_3d bsp p =
   let xp = float_of_int p.pos.x in
@@ -180,7 +216,8 @@ let display bsp p =
   Graphics.fill_rect 0 (Options.win_h / 2) Options.win_w (Options.win_h / 2);
   Graphics.set_color Graphics.black;
   (* WALLS *)
-  display_walls_3d bsp p;
+  draw_walls bsp p;
+  (* display_walls_3d bsp p; *)
 
   (* PLAYER *)
   display_player p;
