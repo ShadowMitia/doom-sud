@@ -1,0 +1,115 @@
+#+TITLE: Compte rendu du projet PFA/Doom
+#+AUTHOR: Dimitri Belopopsky
+#+EMAIL: dimitri.belopopsky@u-psud.fr
+
+* Installation
+
+Télécharger et extraire l'archive ou alternativement cloner le dépot github avec les commandes suivantes:
+
+#+begin_src sh
+git clone https://github.com/ShadowMitia/doom-sud.git
+cd doom-sud
+make
+#+end_src
+
+Pour lancer l'exécutable:
+
+#+begin_src sh
+./doom labyrinthes/lab1.lab
+#+end_src
+
+* Description
+
+Le but du projet est de créer un moteur graphique type jeu Doom en 2.5D (comme pour Doom et Doom II).
+Un moteur graphique est une partie spécialisé d'un moteur de jeu dans le rendu graphique. Son but est uniquement
+de géré l'affichage des différents éléments d'une scène, et l'ordre d'affichage (pour créer de la pespective par exemple).
+C'est également dans le moteur graphique que l'on retrouve des systèmes comme les moteurs de particules, l'éclairage
+de scène ainsi que l'ombrage.
+
+
+** Implémentation de Point
+
+Rien de très compliqué dans la création d'un point
+
+** Implémentaiton de Segment
+
+La structure t de segment n'a pas bougé durant le développement du projet. Il n'a pas été vu
+comme utile de rajouter des attributs, car la plupart des nouvelles données doivent être recalculés
+à chaque frame de toutes façons, ou beaucoup trop souvent pour que cela en vaille la peine.
+
+La fonction la plus dure à implémanter ici à été ~split_segment~, car il y a beaucoup de cas différent à prendre en compte,
+et il n'est pas toujours évident de se représenter tout les cas possibles. Il faut aussi penser à tester les segments dans les
+deux sens, car les segments ont une direction (et en fait s'emploient comme des vecteurs). Déterminer tout les cas possibles est pénible (surtout sans répétition)
+et ça avance aussi moins vite quand ~split~ à cause d'un ajout à une liste qui disparaît par erreur lors du débogage...
+
+** Implémentation de Player
+
+Rien de très difficile dans l'implémentation de player.
+
+** Implémentation de Bsp
+
+Rien de très particuliers dans le bsp, une fois que le ~split_segment~ de Segment est terminé,
+le bsp est simplement un arbre binaire, avec différentes fonctions pour parcourir l'arbre.
+
+** Implémentation de Render
+
+C'est le module le plus grand du projet. Toutes les fonctions d'affichages se situent là-dedans.
+Une particularité du module est le fait que seul la fonction ~display~ est visible globalement.
+Chaque module est en fait compartimenté au maximum, pour éviter trop d'intéractions intermodule qui
+augmente le nombre de bugs possible. Pour Render, cela permet surtout de pouvoir centraliser tout l'affichage
+au même endroit, et donc de bien mieux contrôler l'affichage. L'affichage de chaque "composant" de l'affichage
+(player, minimap, walls, etc) dispose de sa propre fonction, ce qui rend le code plus clair, mais aussi
+facilite l'ajustement de paramètre comme les couleurs.
+
+** Main.ml
+
+Ici se trouve la boucle principale du programme, quelques fonctions pour aider à l'initialisation et un jeu de test créer au long
+du projet.
+
+Une fonction intéressante, basé sur une réponse vue sur StackOverflow, est la fonction ~print_bsp_to_file~
+qui extrait un bsp, et l'insère dans un fichier ~.org~ avec un code block pour du code ~dot~ dans lequel on écrit
+les différents noeuds et branches de l'arbre. Il suffit après d'ouvrir le fichier, de faire ~C-c C-c~ dans le bloc, un svg est
+généré avec l'arbre inscrit dedans. C'est la meilleure façon d'afficher un arbre, plutôt que dans la console!
+
+* Ce qui à été fait et envisagé
+
+Sujet:
+- [X] Implémentation du module Point
+
+- [X] Implémentation du module Segment
+
+- [X] Implémentation du module Player
+
+- [X] Implémentation du module Bsp
+
+- [-] Rotation et translation (bug)
+
+- [-] Clipping (non testé)
+
+- [-] Projection horizontale (bug)
+
+- [-] Affichage "3D" (bug)
+
+En plus:
+- [X] Minimap
+
+- [X] Déplacement du joueur
+
+- [ ] Systéme de collision
+
+- [ ] Système de "toggle" pour les paramètres dans Options
+
+
+* Améliorations possibles
+
+Mieux gérer son temps! C'est une ressource qui part très rapidement dans un projet!
+
+Quelques morceaux de codes auraient pu être mis dans des fonctions, pour gagner en lisibilité et modularité
+par exemple, mais qui ne n'ont pas été fait par manque de temps.
+
+- La création de nouveaux segments à partir de valeurs du type ~xo yo xd yd~
+- des fonctions plus génériques de rotation et translation sur les segments
+- Comme le système de toggle n'a pas été mis en place, il y a de l'informations de débogage qui pourrait être caché
+- La fonction d'affichage ~generate_3d_wall~ en 3D pourrait être modularisé en sous-fonctions, elle est beaucoup trop grande et peu lisible
+- Dans player, la rotation pourrait être fixé dans l'intervalle 0-360 pour éviter des calculs avec des nombres plus grand et des dépassement d'entiers. Une deuxième optimisation serait d'avoir les tables de cos et sin prégénérés.
+- le module Render pourrait être divisé en sous-modules
