@@ -2,6 +2,10 @@
 !compte_rendu.org
 *.svg
 doom
+*.pdf
+*.tex
+_minted*/
+_minted*/*
 
 # Created by https://www.gitignore.io/api/emacs,ocaml,linux,windows,osx
 
