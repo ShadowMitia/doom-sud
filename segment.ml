@@ -24,12 +24,12 @@ let new_segment ?id:(iden="") xo yo xd yd =
   { id=(get_id ()); porig=orig; pdest=dest; ci=0.0; ce=1.0}
 
 let get_real_coord s =
-    (* Les "vrais" valeurs des extrémités du segment*)
-  let lx = s.pdest.x - s.porig.x in
-  let ly = s.pdest.y - s.porig.y in
+    (* The real values to both extremities of the segment *)
+  let lx = s.pdest.x - s.porig.x in (* xB - xA *)
+  let ly = s.pdest.y - s.porig.y in (* yB - yA *)
   let xo = (float_of_int s.porig.x) +. ((float_of_int lx) *. s.ci) in (* xA *)
-  let xd = (float_of_int s.porig.x) +. ((float_of_int lx) *. s.ce) in (* xB *)
   let yo = (float_of_int s.porig.y) +. ((float_of_int ly) *. s.ci) in (* yA *)
+  let xd = (float_of_int s.porig.x) +. ((float_of_int lx) *. s.ce) in (* xB *)
   let yd = (float_of_int s.porig.y) +. ((float_of_int ly) *. s.ce) in (* yB *)
   (xo, yo, xd, yd)
 
