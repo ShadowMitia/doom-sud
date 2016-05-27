@@ -16,17 +16,16 @@ let rotate d p =
   | Left ->  p.pa <- p.pa + 15
   | Right -> p.pa <- p.pa - 15
 
-
 type mv = MFwd | MBwd | MLeft | MRight
 
 let move d p bsp =
-  let p_step = (int_of_float Options.step_dist) in
+  let step = (int_of_float Options.step_dist) in
   match d with
-  | MFwd -> let new_y = p.pos.y + p_step in
+  | MFwd -> let new_y = p.pos.y + step in
             p.pos <- Point.new_point p.pos.x new_y
-  | MBwd -> let new_y = p.pos.y - p_step in
+  | MBwd -> let new_y = p.pos.y - step in
             p.pos <- Point.new_point p.pos.x  new_y
-  | MRight -> let new_x = p.pos.x + p_step in
+  | MRight -> let new_x = p.pos.x + step in
             p.pos <- Point.new_point new_x p.pos.y
-  | MLeft -> let new_x = p.pos.x - p_step in
+  | MLeft -> let new_x = p.pos.x - step in
              p.pos <- Point.new_point new_x p.pos.y
