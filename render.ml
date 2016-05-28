@@ -4,6 +4,7 @@ open Bsp
 open Player
 open Graphics
 
+(* Rename to rotatio around point? *)
 let rotation_around_player seg p =
   let xp = float_of_int (p.pos.x) in
   let yp = float_of_int (p.pos.y) in
@@ -11,7 +12,7 @@ let rotation_around_player seg p =
   let xo, yo, xd, yd = Segment.get_real_coord seg in
   (* rotation around the player placed at the origin *)
   (* translation + rotation *)
-  (* DON'T DIRECTLY CHANGE XO, YO; XD; YD OR BAD THINGS WILL HAPPEN *)
+  (* DON'T DIRECTLY CHANGE XO, YO, XD, YD OR BAD THINGS WILL HAPPEN *)
   let xo' = (xo -. xp) *. (Trigo.dcos a) -. (yo -. yp) *. (Trigo.dsin a) in
   let yo' = (yo -. yp) *. (Trigo.dcos a) +. (xo -. xp) *. (Trigo.dsin a) in
   let xd' = (xd -. xp) *. (Trigo.dcos a) -. (yd -. yp) *. (Trigo.dsin a) in
@@ -67,20 +68,29 @@ let draw_walls_simple bsp =
  *)
 
 let clipping2D seg =
-  (*
+
   let xo, yo, xd, yd = Segment.get_real_coord seg in
-   *)
+  (*
   let xo = float_of_int (seg.porig.x) in
   let yo = float_of_int (seg.porig.y) in
   let xd = float_of_int (seg.pdest.x) in
   let yd = float_of_int (seg.pdest.y) in
+   *)
   let angle = (Trigo.rtan ((yd -. yo) /. (xd -. xo))) in
   if xo < 1. && xd < 1. then
     None
   else if xo < 1. && xd >= 1. then
-    Some (1., yo +. (1. -. xo) *. angle, xd, yd)
+    (* To simplify *)
+    if xd > Options.xmax then
+      Some (Options.xmax, yo +. (1. -. xo) *. angle, xd, yd)
+    else
+      Some (1., yo +. (1. -. xo) *. angle, xd, yd)
   else if xd < 1. && xo >= 1. then
-    Some (xo, yo, 1., yd +. (1. -. xd) *. angle)
+    (* To simplify *)
+    if xo > Options.xmax then
+     Some (xo, yo, Options.xmax, yd +. (1. -. xd) *. angle)
+    else
+      Some (xo, yo, 1., yd +. (1. -. xd) *. angle)
   else
     Some (xo, yo, xd, yd)
 
