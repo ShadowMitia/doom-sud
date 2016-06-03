@@ -21,7 +21,7 @@ let print_segment seg =
 let new_segment ?id:(iden="") xo yo xd yd =
   let orig = Point.new_point xo yo in
   let dest = Point.new_point xd yd in
-  { id=(get_id ()); porig=orig; pdest=dest; ci=0.0; ce=1.0}
+  { id=(iden); porig=orig; pdest=dest; ci=0.0; ce=1.0}
 
 let get_real_coord s =
     (* The real values to both extremities of the segment *)

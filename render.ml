@@ -102,13 +102,19 @@ let horizontal_projection seg =
   (* { seg with porig = Point.new_point (int_of_float xo) (int_of_float yo); pdest=Point.new_point (int_of_float xd) (int_of_float yd) } *)
  *)
 let display_walls bsp p =
-  Bsp.iter (fun seg ->
+  Bsp.parse (fun seg ->
       let seg = rotation_around_player seg p (-p.pa + 90) in
       let seg = clipping2D seg in
       match seg with
       | None -> ()
       | Some (xo, yo ,xd, yd) ->
-         Graphics.draw_segments [| xo, yo, xd, yd|]) bsp
+         Graphics.draw_segments [| xo, yo, xd, yd|]) bsp p.pos;
+  Graphics.set_color Graphics.red;
+  Bsp.parse (fun seg ->
+      let seg = rotation_around_player seg p (-p.pa + 90) in
+      Graphics.moveto (seg.porig.x + ((seg.pdest.x - seg.porig.x) / 2))
+                      (seg.porig.y + ((seg.pdest.y - seg.porig.y) / 2) + 20);
+      Graphics.draw_string seg.id) bsp p.pos
 
 let generate_3d_wall s =
   let is = float_of_int Options.win_h in

@@ -94,6 +94,8 @@ let () =
 
 (* BEGINNING OF PROGRAM *)
 
+
+
 let rec print_list l =
   match l with
   | [] -> ()
@@ -103,7 +105,7 @@ let generate_segments l =
   let rec generate_segments_rec l acc =
     match l with
     | [] -> acc
-    | (x1,y1,x2,y2) :: r -> generate_segments_rec r (Segment.new_segment x1 y1 x2 y2 :: acc)
+    | (x1, y1, x2, y2) :: r -> generate_segments_rec r (Segment.new_segment x1 y1 x2 y2 :: acc)
   in generate_segments_rec l []
 
 let () =
