@@ -74,8 +74,8 @@ let print_bsp_to_file bsp oc =
   let rec print_bsp_rec = function
     | E -> ()
     | N(root, left, right) ->
-       let lroot = (fun x -> match x with E -> root.id | N(r, _, _) -> r.id) left in
-       let rroot = (fun x -> match x with E -> root.id | N(r, _, _) -> r.id) right in
+       let lroot = (fun x -> match x with E -> "leaf"^root.id | N(r, _, _) -> r.id) left in
+       let rroot = (fun x -> match x with E -> "leaf"^root.id | N(r, _, _) -> r.id) right in
        Printf.fprintf oc "%s\n"  ("\"" ^ root.id ^ "\"->\"" ^ lroot ^ "\"[label=\"left\"];");
        Printf.fprintf oc "%s\n"  ("\"" ^ root.id ^ "\"->\"" ^ rroot ^ "\"[label=\"right\"];");
        Printf.fprintf oc "%s\n"  ("{rank=same;\"" ^ lroot ^ "\";\"" ^ rroot ^"\"}");
@@ -109,15 +109,17 @@ let generate_segments l =
 let () =
   (** INITIALISATION **)
   let (player_x, player_y, player_angle), labyrinth = Parse_lab.read_lab Options.cin in
-  let player = ref (Player.new_player (Point.new_point player_x player_y) player_angle) in
+  let player = ref (Player.new_player (Point.new_point player_x player_y) (player_angle)) in
   let gen_segs = generate_segments labyrinth in
   let bsp = Bsp.build_bsp gen_segs in
   (* print_list (gen_segs); *)
 
   (* Write message to file *)
+
   let oc = open_out "debug.org" in    (* create or truncate file, return channel *)
   print_bsp_to_file bsp oc ;  (* write something *)
   close_out oc;                (* flush and close the channel *)
+
   print_string "START OF MAIN PRORAM -----\n";
   (** MAIN LOOP **)
   Graphics.open_graph (Printf.sprintf " %dx%d" Options.win_w Options.win_h);
