@@ -24,8 +24,8 @@ let move d p bsp =
   | MFwd -> let new_y = p.pos.y + step in
             p.pos <- Point.new_point p.pos.x new_y
   | MBwd -> let new_y = p.pos.y - step in
-            p.pos <- Point.new_point p.pos.x  new_y
+            p.pos <- Point.new_point p.pos.x new_y
   | MRight -> let new_x = p.pos.x + step in
             p.pos <- Point.new_point new_x p.pos.y
   | MLeft -> let new_x = p.pos.x - step in
-             p.pos <- Point.new_point new_x p.pos.y
+            p.pos <- Point.new_point new_x p.pos.y

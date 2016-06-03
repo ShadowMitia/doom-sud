@@ -87,3 +87,10 @@ let split hd rest =
                  | None, Some r -> split_rec el s ((fst list_split), r::(snd list_split))
                  | Some l, Some r -> split_rec el s (l :: (fst list_split), r :: (snd list_split))
   in split_rec hd rest ([], [])
+
+let get_coord seg =
+  let xo = seg.porig.x in
+  let yo = seg.porig.y in
+  let xd = seg.pdest.x in
+  let yd = seg.pdest.y in
+  xo, yo, xd, yd
